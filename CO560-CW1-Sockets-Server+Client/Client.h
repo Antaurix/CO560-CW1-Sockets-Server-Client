@@ -63,7 +63,7 @@ public:
 	int ChatToServer(SOCKET clientSocket, char* buffer, int bufferSize) {
 		while (true) {
 
-			cout << "\n \n Enter a message: ";
+			cout << "\n Enter a message: ";
 			cin.getline(buffer, bufferSize);
 
 			int byteCount = send(clientSocket, buffer, bufferSize, 0);
@@ -78,7 +78,7 @@ public:
 
 			byteCount = recv(clientSocket, buffer, bufferSize, 0);
 			if (byteCount > 0) {
-				cout << "Server sent: " << buffer << endl;
+				cout << "Server echoed: " << buffer << endl;
 			}
 			else {
 				cout << "Error receiving message: " << WSAGetLastError() << endl;

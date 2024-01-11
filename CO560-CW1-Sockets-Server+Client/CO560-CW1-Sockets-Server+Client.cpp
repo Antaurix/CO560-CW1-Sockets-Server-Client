@@ -1,4 +1,4 @@
-// main.cpp
+
 #include <iostream>
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -13,8 +13,8 @@
 #define BUFFER_SIZE 200
 
 // Declare the client and server functions
-void client(int port, int bufferSize);
 void server(int port, int bufferSize);
+void client(int port, int bufferSize);
 
 int main()
 {
@@ -30,6 +30,33 @@ int main()
 
     system("pause");
     return 0;
+}
+
+// Define the server function
+void server(int port, int bufferSize) {
+    // Create a Server object
+    Server server;
+
+    server.CheckSocketServer(server.wsaData);
+    server.CreateServerSocket();
+    server.BindTheSocket(server.serverSocket, server.service);
+    server.Listen(server.serverSocket);
+    server.AcceptConnection(server.serverSocket, server.from, server.fromlen);
+
+    // Get the connection details
+    char hoststr[NI_MAXHOST];
+    char servstr[NI_MAXSERV];
+    server.GetConnectionInfo(server.from,server.fromlen,hoststr,servstr);
+    cout << "\n \n Connection details - Host: " << hoststr << ", Service: " << servstr << endl;
+
+    // Chat to the client
+    char buffer[200];
+    server.ChatToClient(server.acceptSocket, buffer);
+
+
+    // Close the socket and clean up
+    closesocket(server.serverSocket);
+    WSACleanup();
 }
 
 // Define the client function
@@ -48,32 +75,5 @@ void client(int port, int bufferSize) {
 
     // Close the socket and clean up
     closesocket(client.clientSocket);
-    WSACleanup();
-}
-
-// Define the server function
-void server(int port, int bufferSize) {
-    // Create a Server object
-    Server server;
-
-    server.CheckSocketServer(server.wsaData);
-    server.CreateServerSocket();
-    server.BindTheSocket(server.serverSocket, server.service);
-    server.Listen(server.serverSocket);
-    server.AcceptConnection(server.serverSocket, server.from, server.fromlen);
-
-    // Get the connection details
-    char hoststr[NI_MAXHOST];
-    char servstr[NI_MAXSERV];
-    server.GetConnectionInfo(server.from,server.fromlen,hoststr,servstr);
-    cout << " Connection details - Host: " << hoststr << ", Service: " << servstr << endl;
-
-    // Chat to the client
-    char buffer[200];
-    server.ChatToClient(server.acceptSocket, buffer);
-
-
-    // Close the socket and clean up
-    closesocket(server.serverSocket);
     WSACleanup();
 }
